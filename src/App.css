@@ -1,0 +1,93 @@
+.App{
+  width:80vw;
+  margin: auto;
+}
+
+/* NAVBAR */
+.AppHeader{
+  height: 50px;
+  width: 80vw;
+  margin: auto;
+  display: flex;
+  border-bottom: 1px grey solid;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.otherInfo{
+  display: flex;
+}
+.otherInfo li{
+  list-style: none;
+  margin-left: 15px;
+}
+
+.otherInfo a{
+  text-decoration: none;
+  color: rgba(16, 15, 15, 0.67);
+  font-size: 15px;
+}
+
+.otherInfo a:hover{
+  color: aqua;
+  transition: color 0.3s linear;
+}
+.otherInfo li:active{
+  color: aqua;
+}
+.home_icon{
+  margin-right: 2px;
+  font-size: 14px;
+}
+  
+.login_page{
+  justify-content: center;
+  text-align: center;
+}
+
+
+
+/* PageContent */
+.PageContent{
+  margin-top: 20px;
+  min-height: 70vh;
+  background-color: rgb(222, 254, 254);
+}
+.home_page{
+  padding: 10px;
+}
+.home_page_row{
+  margin-top: 20px;
+}
+.login_page_form_div{
+  position: relative;
+  top: 25vh;
+}
+.persona_page{
+  padding: 10px;
+}
+.persona_page_btn,.movie_page_btn{
+  display: flex;
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 10px;
+}
+.movieListing,.movie_edit{
+  padding: 10px;
+}
+.addmovie{
+  width: 50vw;
+  margin: auto;
+ 
+  /* background-color: aquamarine; */
+}
+
+
+/* APP-FOOTER */
+.AppFooter{
+  margin-top: 20px;
+  background-color: aliceblue;
+  height: 50px;
+  /* align-items: center;
+  justify-content: center; */
+}
