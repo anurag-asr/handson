@@ -4,6 +4,10 @@ import { useQuery, gql } from "@apollo/client";
 import { Card, Col, Row } from 'antd';
 import Link from 'antd/es/typography/Link';
 import Meta from 'antd/es/card/Meta';
+import { Component } from 'react';
+import ReactDOM from 'react-dom';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
 // import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
 export const MOVIESBYID_QUERY = gql`
@@ -44,6 +48,7 @@ const SingleMovieDetails = () => {
 
   return (
     <div>
+      sadas
      <Row gutter={[16, 16]}>
         {dataSource && (
           <div> 
@@ -62,10 +67,7 @@ const SingleMovieDetails = () => {
                       alt="example"
                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGb56xEqrOH5PIAa5EQqJvrYa1OcEplrdQjA&usqp=CAU"
                     />
-                  }
-
-                 
-                >
+                  }>
                   <Meta
                     title="Europe Street beat"
                     description={`Language:${dataSource.originalLanguage} | Budget:$${dataSource.budget}`}
@@ -74,11 +76,8 @@ const SingleMovieDetails = () => {
               </Link>
             </Col>
           </div>
-        )
-            
-           
-         
-          }
+        ) 
+        }
       </Row>
     </div>
   )

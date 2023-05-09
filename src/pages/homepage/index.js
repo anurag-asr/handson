@@ -3,23 +3,9 @@ import { useQuery, gql } from "@apollo/client";
 import { Card, Col, Row } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Link } from "react-router-dom";
+import { FEATURED_MOVIES_QUERY } from "../../graphQl/movie";
 
-export const FEATURED_MOVIES_QUERY = gql`
-  query MovieList($sort: ListMoviesSort!, $filter: MoviesFilter!) {
-    movies(sort: $sort, filter: $filter) {
-      message
-      count
-      data {
-        title
-        id
-        adult
-        budget
-        originalLanguage
-        budget
-      }
-    }
-  }
-`
+
 
 const Home = () => {
   const { data } = useQuery(FEATURED_MOVIES_QUERY, {

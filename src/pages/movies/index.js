@@ -1,29 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { Button, Card, Col, Row } from "antd";
+import { Button, Card, Col, Input, Row } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Link } from "react-router-dom";
-import { DeleteOutlined, EditOutlined, EllipsisOutlined, SettingOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { FEATURED_MOVIES_QUERY } from "../../graphQl/movie";
 
-export const FEATURED_MOVIES_QUERY = gql`
-  query MovieList($sort: ListMoviesSort!, $filter: MoviesFilter!) {
-    movies(sort: $sort, filter: $filter) {
-      message
-      count
-      data {
-        title
-        id
-        adult
-        budget
-        originalLanguage
-        budget
-      }
-    }
-  }
-`
 
 const MovieListing = () => {
   const [dataSource,setDataSource] = useState()
+  const [searchedText,setSearchedText] = useState()
   const { data } = useQuery(FEATURED_MOVIES_QUERY, {
     variables: {
       sort: {
@@ -48,11 +34,19 @@ const MovieListing = () => {
     })
   }
   
-  // console.log(dataSource)
-
   return (
     <div>
-      <div className="movie_page_btn"><Link to="/addmovie"><Button>Add Movie</Button></Link></div>
+      <div className="movie_page_btn"></div>
+      <div className="persona_page_btn">
+          <Link to="/addmovie"><Button>Add Movie</Button></Link>
+        <Input.Search
+          placeholder="Enter Your Text"
+          onSearch={(value) => {
+            setSearchedText(value);
+          }}
+          onChange={(e)=>{setSearchedText(e.target.value)}}
+        />
+    </div>
       <div className="home_page">
       <Row gutter={[16, 16]}>
         {dataSource &&
@@ -76,7 +70,6 @@ const MovieListing = () => {
                     ,
                     <DeleteOutlined key="setting" onClick={()=>{deletemovieByid(elem.id)}}/>,
                   
-                    // <EllipsisOutlined key="ellipsis" />,
                   ]}
                 >
                   <Meta

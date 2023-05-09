@@ -1,8 +1,7 @@
 import './App.css';
-// import AllRoutes from './Components/AllRoutes';
-import AppFooter from './Components/AppFooter';
-import AppHeader from './Components/AppHeader';
-import PageContent from './Components/PageContent';
+import AppFooter from './Components/appfooter';
+import AppHeader from './Components/appheader';
+import PageContent from './Components/pagecontent';
 
 function App() {
   return (

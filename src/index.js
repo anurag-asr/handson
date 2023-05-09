@@ -16,7 +16,7 @@ import {
 // import { split } from "@apollo/client";
 // import { WebSocketLink } from "@apollo/client/link/ws";
 // import { getMainDefinition } from "@apollo/client/utilities";
-import { AUTH_TOKEN } from "./Pages/Constants";
+import { AUTH_TOKEN } from "./pages/Constants";
 
 const httpLink = createHttpLink({
   uri: "https://tmdb-server-dev.logicwind.co/graphql",

@@ -1,28 +1,10 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
-import { gql, useMutation } from "@apollo/client";
+import {useMutation } from "@apollo/client";
 import { AUTH_TOKEN } from "../Constants";
 import { useNavigate } from "react-router-dom";
+import { LOGIN_MUTATION } from "../../graphQl/login";
 
-
-const LOGIN_MUTATION = gql`
-  mutation EmailandPassword($data:EmailPasswordLogInData!){
-  emailPasswordLogIn(data:$data){
-    message
-    data{
-     token
-      refreshToken
-      user{
-        id
-        email
-        profileImage
-        name
-        firstName
-      }
-    }
-  }
-}
-`
 
 const Login = () => {
   const [email,setEmail] = useState("");

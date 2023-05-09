@@ -1,6 +1,6 @@
 
 import React from 'react'
-import AllRoutes from '../AllRoutes'
+import AllRoutes from '../allroutes'
 
 const PageContent = () => {
   return (

@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
-import { Button, Space, Table, Tag, Modal, Input } from "antd";
+import { Button, Space, Table, Modal, Input, Typography } from "antd";
 import { useEffect, useState } from "react";
 const { Column } = Table;
 
@@ -165,7 +165,7 @@ const Persons = () => {
   return (
     <div className="persona_page">
       <div className="persona_page_btn">
-          <Button onClick={handleAddPerson}>Add New Person</Button>
+        <Button onClick={handleAddPerson}>Add New Person</Button>
         <Input.Search
           placeholder="Enter Your Text"
           onSearch={(value) => {
@@ -242,7 +242,8 @@ const Persons = () => {
           });
           setIsEditable(false);
         }}
-      >
+      > 
+       
         <Input
           value={editPerson?.name}
           onChange={(e) => {
@@ -281,7 +282,8 @@ const Persons = () => {
             return [...pre,newperson]
           })
         }}
-        >
+        >  
+          
           <Input value={newperson.name}
           onChange={(e)=>{setNewPerson({...newperson,name:e.target.value})}}
           placeholder="Enter Name of A person"

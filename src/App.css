@@ -75,11 +75,10 @@
 .movieListing,.movie_edit{
   padding: 10px;
 }
-.addmovie{
+.addmovie,.addperson {
   width: 50vw;
   margin: auto;
  
-  /* background-color: aquamarine; */
 }
 
 
