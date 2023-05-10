@@ -46,15 +46,15 @@
 }
 
 
-
 /* PageContent */
 .PageContent{
   margin-top: 20px;
-  min-height: 70vh;
-  background-color: rgb(222, 254, 254);
+  min-height: 75vh;
+  background-color: rgb(238, 247, 247);
 }
 .home_page{
   padding: 10px;
+  
 }
 .home_page_row{
   margin-top: 20px;
@@ -75,12 +75,28 @@
 .movieListing,.movie_edit{
   padding: 10px;
 }
-.addmovie,.addperson {
-  width: 50vw;
-  margin: auto;
- 
+.moviescrolldiv, .personscrooldiv, .homepagescroll{
+  max-height: 75vh;
+  overflow-y: auto;
 }
 
+.addmovie,.addperson,.singlemoviedetails {
+  background-color: aquamarine;
+  margin: auto;
+}
+.singlemoviedetails div{
+  margin:auto
+}
+.carousal{
+  margin: auto;
+  width: 90%;
+}
+
+/* spin */
+.spin{
+  /* background:"black"; */
+  margin:auto
+}
 
 /* APP-FOOTER */
 .AppFooter{

@@ -1,20 +1,24 @@
-import React, { useState } from "react";
-import { Button, Checkbox, Form, Input } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input } from "antd";
 import {useMutation } from "@apollo/client";
 import { AUTH_TOKEN } from "../Constants";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_MUTATION } from "../../graphQl/login";
+import { useAuth } from "../auth";
 
 
 const Login = () => {
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+  // const [usertoken,setUserToken] = useState(localStorage.getItem(AUTH_TOKEN)||"")
   const navigate = useNavigate();
+  const location = useLocation();
+  // const auth = useAuth();
   
-  const onFinish = async(values) => {
-    await setEmail(values.username)
-    await setPassword(values.password)
-    loginfunc()
+  const onFinish = async (values) => {
+    loginfunc({
+      variables:{
+        data:{email:values.username,password:values.password}
+      }
+    })
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -22,21 +26,23 @@ const Login = () => {
     alert("Invalid Crendetial")
   };
   
+  const redirectPath = location.state?.path || "/";
   const [loginfunc,{data}] = useMutation(LOGIN_MUTATION, {
-    variables: {
-     data:{
-      email: email,
-      password: password
-     }
+    onCompleted(res){
+      console.log("completed",res)
+      // auth.signin(true)
     }
   });
 
-  if(data){
-    localStorage.setItem(AUTH_TOKEN, data?.emailPasswordLogIn?.data?.token || "nakko");
-    navigate('/');
-  }
 
-  console.log(data)
+  useEffect(()=>{
+   if(data){
+    localStorage.setItem(AUTH_TOKEN, data?.emailPasswordLogIn?.data?.token || "nakko");
+    navigate(redirectPath,{replace:true});
+  }
+  },[data])
+  
+ 
   return (
     <div className="login_page">
       <div className="login_page_form_div">
@@ -57,7 +63,6 @@ const Login = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          
         >
           <Form.Item
             label="Username"
@@ -85,16 +90,6 @@ const Login = () => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item
-            name="remember"
-            valuePropName="checked"
-            wrapperCol={{
-              offset: 8,
-              span: 16,
-            }}
-          >
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
 
           <Form.Item
             wrapperCol={{
@@ -112,5 +107,10 @@ const Login = () => {
     </div>
   );
 };
+
+// export const isAuthenticated =() =>{
+ 
+//  }  
+
 
 export default Login;

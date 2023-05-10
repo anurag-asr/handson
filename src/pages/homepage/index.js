@@ -22,7 +22,7 @@ const Home = () => {
 
   return (
     <div className="home_page">
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} className="homepagescroll">
         {movieData &&
           movieData.map((elem) => (
             <Col span={8} key={elem.id}>

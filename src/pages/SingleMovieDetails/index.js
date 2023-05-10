@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useQuery, gql } from "@apollo/client";
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Image, Row } from 'antd';
 import Link from 'antd/es/typography/Link';
 import Meta from 'antd/es/card/Meta';
-import { Component } from 'react';
-import ReactDOM from 'react-dom';
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
+import { Carousel } from 'antd';
+
 // import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+
+const contentStyle = {
+  margin: 0,
+  height: '460px',
+  color: '#fff',
+  lineHeight: '160px',
+  textAlign: 'center',
+  background: '#364d79',
+};
 
 export const MOVIESBYID_QUERY = gql`
 query MovieByid($id:ID!){
@@ -20,7 +27,6 @@ query MovieByid($id:ID!){
       originalTitle
       status
       streamingOn
-
     }
   }
 }
@@ -37,31 +43,48 @@ const SingleMovieDetails = () => {
 
     const singleMovieData = data?.movie?.data 
 
+    const onChange = (currentSlide) => {
+      console.log(currentSlide);
+    };
+
     useEffect(()=>{
        if(data){
         setDataSource(singleMovieData)
        }
     },[data])
+   
 
-
-
+  console.log(data)
 
   return (
-    <div>
-      sadas
-     <Row gutter={[16, 16]}>
+    <div className='singlemoviedetails'>
+      <div >
+      <Carousel autoplay afterChange={onChange} effect="fade">
+      <div>
+        <Image style={contentStyle} width="100%"  src="https://thumbs.dreamstime.com/b/sunset-sunrise-landscape-panorama-beautiful-nature-beach-colorful-red-orange-purple-clouds-reflected-ocean-49632998.jpg" />
+      </div>
+      <div>
+        <Image style={contentStyle} width="100%"  src="https://thumbs.dreamstime.com/b/travel-boat-thailand-island-beach-tropical-coast-asia-landsc-landscape-background-32070946.jpg" />
+      </div>
+      <div>
+        <Image style={contentStyle} width="100%"  src="https://thumbs.dreamstime.com/b/nature-panorama-mountain-landscape-sunset-norway-44518447.jpg" />
+      </div>
+      <div>
+        <Image style={contentStyle} width="100%"  src="https://thumbs.dreamstime.com/b/print-wallpaper-fantasy-design-modern-art-fog-forest-colored-mystic-background-magical-magic-artistic-fairytale-dream-113837169.jpg" />
+      </div>
+    </Carousel>
+      </div>
+      <div>
+      <Row >
         {dataSource && (
           <div> 
-             <div>Carousel Space</div>
-             <Col span={16} key={dataSource.id}>
-              <Link to={`/favourite/${dataSource.id}`}>
+             <Col span={24} key={dataSource.id}>
+             
                 <Card
                   hoverable
-                  size="small"
+                  size="large"
                   title={`${dataSource.title}`}
                   extra={<a href={`detailsmovie/:${dataSource.id}`}>Details</a>}
-                 
-                  
                   cover={
                     <img
                       alt="example"
@@ -73,12 +96,14 @@ const SingleMovieDetails = () => {
                     description={`Language:${dataSource.originalLanguage} | Budget:$${dataSource.budget}`}
                   />
                 </Card>
-              </Link>
+            
             </Col>
           </div>
         ) 
         }
       </Row>
+      </div>
+     
     </div>
   )
 }

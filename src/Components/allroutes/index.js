@@ -7,18 +7,19 @@ import Login from '../../pages/login'
 import Persons from '../../pages/persons'
 import MovieListing from '../../pages/movies'
 import Home from '../../pages/homepage'
+import RequireAuth from '../../pages/requireauth'
 
 
 const AllRoutes = () => {
   return (
     <Routes>
       <Route path='/' element={<Home/>}/>
-      <Route path='/movies' element={<MovieListing/>}/>
-      <Route path='/movie_edit/:id' element={<MovieEdit/>}/>
-      <Route path='/addmovie' element={<AddMovie/>}/>
-      <Route path='/person' element={<Persons/>}/>
+      <Route path='/movies' element={<RequireAuth><MovieListing/></RequireAuth> }/>
+      <Route path='/movie_edit/:id' element={<RequireAuth><MovieEdit/></RequireAuth>}/>
+      <Route path='/addmovie' element={<RequireAuth><AddMovie/></RequireAuth>}/>
+      <Route path='/person' element={<RequireAuth><Persons/></RequireAuth>}/>
       <Route path='/login' element={<Login/>}/>
-      <Route path='/detailsmovie/:id' element={<SingleMovieDetails/>}/>
+      <Route path='/detailsmovie/:id' element={<RequireAuth><SingleMovieDetails/></RequireAuth>}/>
     </Routes>
   )
 }

@@ -176,7 +176,7 @@ const Persons = () => {
     </div>
 
       {sourceData && (
-        <Table dataSource={sourceData}>
+        <Table dataSource={sourceData} className="personscrooldiv">
           <Column title="Name" dataIndex="name" key="name" />
           <Column
             title="Gender"

@@ -17,6 +17,7 @@ import {
 // import { WebSocketLink } from "@apollo/client/link/ws";
 // import { getMainDefinition } from "@apollo/client/utilities";
 import { AUTH_TOKEN } from "./pages/Constants";
+import { AuthProvider } from "./pages/auth";
 
 const httpLink = createHttpLink({
   uri: "https://tmdb-server-dev.logicwind.co/graphql",
@@ -41,11 +42,14 @@ const client = new ApolloClient({
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
-    <ApolloProvider client={client}>
+  <AuthProvider>
+  <ApolloProvider client={client}>
       <React.StrictMode>
         <App />
       </React.StrictMode>
     </ApolloProvider>
+  </AuthProvider>
+  
   </BrowserRouter>
 );
 

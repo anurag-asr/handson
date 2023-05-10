@@ -16,15 +16,16 @@ const AppHeader = () => {
       <div className="title_tag">TMDB</div>
       <div className="otherInfo_div">
         <ul className="otherInfo">
-          <li><a href="/"><HomeOutlined className="home_icon"/>Home</a></li>
-          <li><a href="/favourite">FavouriteMovie</a></li>
+          <li><a href="/"><HomeOutlined className="home_icon"/>DashBoard</a></li>
           <li><a href="/person">Person</a></li>
           <li><a href="/movies">Movies</a></li>
           {
-            logincheck ? <li onClick={()=>{
+            logincheck ? <li style={{
+              
+            }} onClick={()=>{
               localStorage.setItem(AUTH_TOKEN,"")
-              navigate("/login")
-            }}><UserOutlined />Logout</li> : <li><a href="/login"><UserOutlined />Login</a></li>
+              navigate("/")
+            }}><UserOutlined />Logout</li> : <li><UserOutlined />Login</li>
           }
         </ul>
       </div>
