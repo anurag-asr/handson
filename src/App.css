@@ -88,6 +88,14 @@ padding-top: 20vh;
   margin: auto;
   width: 50vw;
 }
+.singlemovieimage{
+  margin: 0;
+  height: 460px;
+  color: #fff;
+  line-height: 160px;
+  text-align: center;
+  background: #364d79;
+}
 .singlemoviedetails div{
   margin:auto
 }

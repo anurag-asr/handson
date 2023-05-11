@@ -20,3 +20,18 @@ export const MOVIE_QUERY_BY_ID = gql`
     }
   }
 `;
+
+export const MOVIESBYID_QUERY = gql`
+  query MovieByid($id: ID!) {
+    movie(id: $id) {
+      message
+      data {
+        id
+        title
+        originalTitle
+        status
+        streamingOn
+      }
+    }
+  }
+`;
