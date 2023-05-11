@@ -21,11 +21,11 @@ const AppHeader = () => {
           <li><a href="/movies">Movies</a></li>
           {
             logincheck ? <li style={{
-              
+              cursor:"pointer"
             }} onClick={()=>{
               localStorage.setItem(AUTH_TOKEN,"")
               navigate("/")
-            }}><UserOutlined />Logout</li> : <li><UserOutlined />Login</li>
+            }}>< UserOutlined />Logout</li> : <li><UserOutlined />Login</li>
           }
         </ul>
       </div>

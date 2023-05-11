@@ -1,15 +1,15 @@
 import React from "react";
-import { Button,Form, Input } from "antd";
-import {useState} from "react"
+import { Button, Form, Input } from "antd";
+import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { ADD_MOVIE_QUERY, MOVIE_UPDATE_QUERY } from "../graphQl/movieform";
 
-const FormTable = ({id,dataById}) => {
-    const navigate = useNavigate()
+const FormTable = ({ id, dataById }) => {
+  const navigate = useNavigate();
   const [movie, setMovie] = useState({
-    adult: Boolean(),
-    budget: dataById?.budget || "" ,
+    adult: dataById?.adult || "",
+    budget: dataById?.budget || "",
     originalLanguage: dataById?.originalLanguage || "",
     title: dataById?.title || "",
     overview: dataById?.overview || "",
@@ -24,52 +24,55 @@ const FormTable = ({id,dataById}) => {
   });
 
   const newData = {
-    "adult":movie?.adult,
-    "budget":movie?.budget,
-    "originalLanguage":movie?.originalLanguage,
-    "originalTitle":movie?.originalTitle,
-    "title":movie?.title,
-    "overview":movie?.overview,
-    "releaseDate": "2023-04-03T12:48:48.042Z",
-    "revenue":movie?.revenue,
-    "runtime":movie?.runtime,
-    "status":movie?.status,
-    "tagline":movie?.tagline,
-    "countryIds": [],
-    "languageIds":[]
-  } 
+    adult: movie?.adult,
+    budget: movie?.budget,
+    originalLanguage: movie?.originalLanguage,
+    originalTitle: movie?.originalTitle,
+    title: movie?.title,
+    overview: movie?.overview,
+    releaseDate: "2023-04-03T12:48:48.042Z",
+    revenue: movie?.revenue,
+    runtime: movie?.runtime,
+    status: movie?.status,
+    tagline: movie?.tagline,
+    countryIds: [],
+    languageIds: [],
+  };
 
-   const [addmovie] = useMutation(ADD_MOVIE_QUERY,{
-    variables:{
-      data: newData
-  }
-  })
+  const [addmovie] = useMutation(ADD_MOVIE_QUERY, {
+    fetchPolicy: "network-only",
+    onCompleted() {
+      navigate("/movies");
+    },
+    onError() {},
+  });
 
-  
-  const [editmovie] = useMutation(MOVIE_UPDATE_QUERY,{
-    fetchPolicy: 'network-only',
-    variables:{
-     id:id,
-     data:newData
+  const [editmovie] = useMutation(MOVIE_UPDATE_QUERY, {
+    fetchPolicy: "network-only",
+    onCompleted(res) {
+      navigate("/movies");
     },
-    onCompleted(res){
-     console.log(res)
-    },
-    onError(){}
-   })
+    onError() {},
+  });
 
   const onFinish = (values) => {
-    id ? editmovie() : addmovie() 
-    navigate("/movies")
+    id
+      ? editmovie({
+          variables: {
+            id: id,
+            data: newData,
+          },
+        })
+      : addmovie({
+          variables: {
+            data: newData,
+          },
+        });
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
- console.log("movie",movie)
- console.log("editdata",newData)
-
 
   return (
     <div>
@@ -100,7 +103,7 @@ const FormTable = ({id,dataById}) => {
             },
           ]}
         >
-          <Input />
+          <Input type="boolean" />
         </Form.Item>
 
         <Form.Item
@@ -117,7 +120,7 @@ const FormTable = ({id,dataById}) => {
             },
           ]}
         >
-          <Input />
+          <Input type="number" />
         </Form.Item>
 
         <Form.Item
@@ -185,27 +188,11 @@ const FormTable = ({id,dataById}) => {
             },
           ]}
         >
-          <Input />
+          <Input type="number" />
         </Form.Item>
 
         <Form.Item
-          label="ReleaseDate"
-          name="releaseDate"
-          // value="2023-04-03T12:48:48.042Z"
-          // onChange={(e)=>{ setMovie({ ...movie, releaseDate: e.target.value });}}
-
-          rules={[
-            {
-              required: true,
-              message: "Please input your releaseDate!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="runtime"
+          label="Runtime"
           name="runtime"
           value={movie.runtime}
           onChange={(e) => {
@@ -218,7 +205,7 @@ const FormTable = ({id,dataById}) => {
             },
           ]}
         >
-          <Input />
+          <Input type="number" />
         </Form.Item>
 
         <Form.Item
@@ -239,7 +226,7 @@ const FormTable = ({id,dataById}) => {
         </Form.Item>
 
         <Form.Item
-          label="tagline"
+          label="Tagline"
           name="tagline"
           value={movie.tagline}
           onChange={(e) => {
@@ -272,7 +259,6 @@ const FormTable = ({id,dataById}) => {
           <Input />
         </Form.Item>
 
-
         <Form.Item
           wrapperCol={{
             offset: 8,
@@ -280,9 +266,7 @@ const FormTable = ({id,dataById}) => {
           }}
         >
           <Button type="primary" htmlType="submit">
-            {
-                id ? "Edit" : "Add"
-            }
+            {id ? "Edit" : "Add"}
           </Button>
         </Form.Item>
       </Form>

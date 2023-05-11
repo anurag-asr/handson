@@ -1,6 +1,8 @@
 .App{
   width:80vw;
+  color: rgb(82, 79, 79);
   margin: auto;
+  font-weight: 300;
 }
 
 /* NAVBAR */
@@ -41,27 +43,29 @@
 }
   
 .login_page{
-  justify-content: center;
-  text-align: center;
+padding-top: 20vh;
 }
 
 
 /* PageContent */
 .PageContent{
   margin-top: 20px;
-  min-height: 75vh;
+  min-height: 70vh;
   background-color: rgb(238, 247, 247);
 }
 .home_page{
   padding: 10px;
-  
 }
 .home_page_row{
   margin-top: 20px;
 }
 .login_page_form_div{
-  position: relative;
-  top: 25vh;
+  /* position: relative; */
+  padding: 10;
+  width: 30vw;
+  margin: auto;
+  border: 1px grey solid;
+  /* background-color: blue; */
 }
 .persona_page{
   padding: 10px;
@@ -81,8 +85,8 @@
 }
 
 .addmovie,.addperson,.singlemoviedetails {
-  background-color: aquamarine;
   margin: auto;
+  width: 50vw;
 }
 .singlemoviedetails div{
   margin:auto
@@ -94,15 +98,18 @@
 
 /* spin */
 .spin{
-  /* background:"black"; */
+  background:"black";
   margin:auto
 }
 
 /* APP-FOOTER */
 .AppFooter{
-  margin-top: 20px;
-  background-color: aliceblue;
-  height: 50px;
-  /* align-items: center;
-  justify-content: center; */
+  margin-top: 10px;
+  display: flex;
+  border-top: 1px grey solid;
+  border-bottom: 1px grey solid;
+  margin-bottom:3px ;
+  align-items: center;
+  height: 30px;
+  justify-content: center;
 }

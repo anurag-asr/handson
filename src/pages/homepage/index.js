@@ -1,30 +1,36 @@
-import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import React, { useEffect, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
 import { Card, Col, Row } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Link } from "react-router-dom";
 import { FEATURED_MOVIES_QUERY } from "../../graphQl/movie";
 
-
-
 const Home = () => {
-  const { data } = useQuery(FEATURED_MOVIES_QUERY, {
-    variables: {
-      sort: {
-        field: "popularity",
-        order: "DESC",
-      },
-      filter: {},
+  const [datasource, setDataSource] = useState();
+  const [homeDataFetch] = useLazyQuery(FEATURED_MOVIES_QUERY, {
+    fetchPolicy: "network-only",
+    onCompleted(res) {
+      setDataSource(res?.movies?.data.slice(0, 5));
     },
   });
 
-  const movieData = data?.movies?.data.slice(0, 6);
+  useEffect(() => {
+    homeDataFetch({
+      variables: {
+        sort: {
+          field: "popularity",
+          order: "DESC",
+        },
+        filter: {},
+      },
+    });
+  }, []);
 
   return (
     <div className="home_page">
       <Row gutter={[16, 16]} className="homepagescroll">
-        {movieData &&
-          movieData.map((elem) => (
+        {datasource ? (
+          datasource.map((elem) => (
             <Col span={8} key={elem.id}>
               <Link to={`/favourite/${elem.id}`}>
                 <Card
@@ -46,7 +52,10 @@ const Home = () => {
                 </Card>
               </Link>
             </Col>
-          ))}
+          ))
+        ) : (
+          <h1>Loading.......</h1>
+        )}
       </Row>
     </div>
   );

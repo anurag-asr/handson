@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery, gql } from "@apollo/client";
 import { Card, Col, Image, Row } from 'antd';
-import Link from 'antd/es/typography/Link';
 import Meta from 'antd/es/card/Meta';
 import { Carousel } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 // import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
@@ -59,7 +59,8 @@ const SingleMovieDetails = () => {
   return (
     <div className='singlemoviedetails'>
       <div >
-      <Carousel autoplay afterChange={onChange} effect="fade">
+      <Carousel autoplay autoplaySpeed={1000} pauseOnHover={false} arrows prevArrow={<LeftOutlined/>} nextArrow={<RightOutlined/>}  afterChange={onChange} effect="fade"
+      >
       <div>
         <Image style={contentStyle} width="100%"  src="https://thumbs.dreamstime.com/b/sunset-sunrise-landscape-panorama-beautiful-nature-beach-colorful-red-orange-purple-clouds-reflected-ocean-49632998.jpg" />
       </div>
@@ -74,6 +75,7 @@ const SingleMovieDetails = () => {
       </div>
     </Carousel>
       </div>
+      
       <div>
       <Row >
         {dataSource && (
