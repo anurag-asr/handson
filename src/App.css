@@ -56,6 +56,8 @@ padding-top: 20vh;
 .home_page{
   padding: 10px;
 }
+
+
 .home_page_row{
   margin-top: 20px;
 }
@@ -64,8 +66,7 @@ padding-top: 20vh;
   padding: 10;
   width: 30vw;
   margin: auto;
-  border: 1px grey solid;
-  /* background-color: blue; */
+
 }
 .persona_page{
   padding: 10px;
@@ -104,6 +105,10 @@ padding-top: 20vh;
   width: 90%;
 }
 
+Link{
+  text-decoration: none;
+  color: aquamarine;
+}
 /* spin */
 .spin{
   background:"black";

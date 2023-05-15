@@ -1,24 +1,23 @@
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
-import React, { useEffect} from "react";
-import { AUTH_TOKEN } from "../../pages/Constants";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AUTH_TOKEN } from "../../common/constant";
+
 
 const AppHeader = () => {
   const logincheck=localStorage.getItem(AUTH_TOKEN);
   const navigate = useNavigate()
-
-  useEffect(()=>{
-
-  })
   
   return (
     <div className="AppHeader">
+      
       <div className="title_tag">TMDB</div>
       <div className="otherInfo_div">
         <ul className="otherInfo">
-          <li><a href="/"><HomeOutlined className="home_icon"/>DashBoard</a></li>
-          <li><a href="/person">Person</a></li>
-          <li><a href="/movies">Movies</a></li>
+          
+          <li> <Link to ="/"><HomeOutlined className="home_icon"/>Dashboard</Link></li>
+          <li> <Link to ="/person">Person</Link></li>
+          <li> <Link to ="/movies">Movies</Link></li>
           {
             logincheck ? <li style={{
               cursor:"pointer"

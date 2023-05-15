@@ -10,7 +10,7 @@ const Home = () => {
   const [homeDataFetch] = useLazyQuery(FEATURED_MOVIES_QUERY, {
     fetchPolicy: "network-only",
     onCompleted(res) {
-      setDataSource(res?.movies?.data.slice(0, 5));
+      setDataSource(res?.listMovies?.data);
     },
   });
 
@@ -18,21 +18,23 @@ const Home = () => {
     homeDataFetch({
       variables: {
         sort: {
-          field: "popularity",
+          field: "createdAt",
           order: "DESC",
         },
-        filter: {},
+        filter: {
+          limit:5
+        },
       },
     });
   }, []);
-
+  
   return (
     <div className="home_page">
       <Row gutter={[16, 16]} className="homepagescroll">
         {datasource ? (
           datasource.map((elem) => (
             <Col span={8} key={elem.id}>
-              <Link to={`/favourite/${elem.id}`}>
+              <Link to={`/Detailsmovie/${elem.id}`}>
                 <Card
                   hoverable
                   size="small"

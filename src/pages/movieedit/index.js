@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import FormTable from "../../hoc/MovieForm";
 import { MOVIE_QUERY_BY_ID } from "../../graphQl/movieedit";
 
-
 const MovieEdit = () => {
   const { id } = useParams();
   const [dataById, setDataById] = useState();

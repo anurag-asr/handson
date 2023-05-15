@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Form, Input } from "antd";
 import { useMutation } from "@apollo/client";
-import { AUTH_TOKEN } from "../Constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LOGIN_MUTATION } from "../../graphQl/login";
-import { useAuth } from "../auth";
+import { AUTH_TOKEN } from "../../common/constant";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,22 +23,16 @@ const Login = () => {
   };
 
   const redirectPath = location.state?.path || "/";
-  const [loginfunc, { data }] = useMutation(LOGIN_MUTATION, {
-    onCompleted(res) {
-      console.log("completed", res);
-      // auth.signin(true)
-    },
-  });
 
-  useEffect(() => {
-    if (data) {
+  const [loginfunc] = useMutation(LOGIN_MUTATION, {
+    fetchPolicy:"network-only",
+    onCompleted(res) {
       localStorage.setItem(
-        AUTH_TOKEN,
-        data?.emailPasswordLogIn?.data?.token || "nakko"
+        AUTH_TOKEN,res?.emailPasswordLogIn?.data?.token || []
       );
       navigate(redirectPath, { replace: true });
-    }
-  }, [data]);
+    },
+  });
 
   return (
     <div className="login_page">

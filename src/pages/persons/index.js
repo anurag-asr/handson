@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
-import { Button, Space, Table, Modal, Input, Typography } from "antd";
+import { Button, Space, Table, Modal, Input, Typography, Select } from "antd";
 import { useEffect, useState } from "react";
 import {
   DELETE_PERSON_QUERY,
@@ -12,6 +12,7 @@ import { ADD_PERSON_DATA } from "../../graphQl/addperson";
 const { Column } = Table;
 
 const Persons = () => {
+  const [sortby,setSortBy] = useState("DESC")
   const [adddata, setAddData] = useState("");
   const [searchedText, setSearchedText] = useState("");
   const [editPersonId, setEditPersonId] = useState("");
@@ -97,18 +98,41 @@ const Persons = () => {
       variables: {
         sort: {
           field: "createdAt",
-          order: "DESC",
+          order: sortby,
         },
-        filter: {},
+        filter: {
+          searchTerm:searchedText
+        },
       },
     });
   };
-  useEffect(() => {
-    personData();
-    // eslint-disable-next-line
-  }, [adddata]);
 
- console.log(editPerson)
+  const handleSortBy = (value) => {
+    setSortBy(value)
+  };
+  
+  let id;
+  const handleChange = (e) => {
+   clearTimeout(id);
+   id = setTimeout(()=>{
+     setSearchedText(e.target.value)
+   },1000)
+  }
+
+  const handelInfiniteScroll = () => {
+    console.log("setTarget e target value")
+  }
+
+  useEffect(() => {
+    personData()
+
+    // eslint-disable-next-line
+  }, [adddata, sortby, searchedText]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handelInfiniteScroll);
+    return () => window.removeEventListener("scroll", handelInfiniteScroll);
+  }, []);
 
   return (
     <div className="persona_page">
@@ -116,50 +140,66 @@ const Persons = () => {
         <Button onClick={handleAddPerson}>Add New Person</Button>
         <Input.Search
           placeholder="Enter Your Text"
-          onSearch={(value) => {
-            setSearchedText(value);
-          }}
-          onChange={(e) => {
-            setSearchedText(e.target.value);
-          }}
+          onChange={handleChange}
         />
+           <Select
+      defaultValue="DESC"
+      style={{
+        width: 120,
+        marginLeft:"5px"
+      }}
+      onChange={handleSortBy}
+      options={[
+        {
+          value: 'ASC',
+          label: 'ASC',
+        },
+        {
+          value: 'DESC',
+          label: 'DESC',
+        }
+      ]}
+    />
       </div>
 
       {sourceData && (
-        <Table dataSource={sourceData} className="personscrooldiv">
-          <Column title="Name" dataIndex="name" key="name" />
+        <Table
+          dataSource={sourceData}
+          rowKey={(obj) => obj.id}
+          className="personscrooldiv"
+        >
+          <Column title="Name" dataIndex="name" />
           <Column
             title="Gender"
             dataIndex="gender"
             key="gender"
-            filteredValue={[searchedText]}
-            onFilter={(value, record) => {
-              return (
-                String(record.name)
-                  .toLocaleLowerCase()
-                  .includes(value.toLowerCase()) ||
-                String(record.gender)
-                  .toLocaleLowerCase()
-                  .includes(value.toLowerCase()) ||
-                String(record.popularity)
-                  .toLocaleLowerCase()
-                  .includes(value.toLowerCase()) ||
-                String(record.knownForDepartment)
-                  .toLocaleLowerCase()
-                  .includes(value.toLowerCase())
-              );
-            }}
+            // filteredValue={[searchedText]}
+            // onFilter={(value, record) => {
+            //   return (
+            //     String(record.name)
+            //       .toLocaleLowerCase()
+            //       .includes(value.toLowerCase()) ||
+            //     String(record.gender)
+            //       .toLocaleLowerCase()
+            //       .includes(value.toLowerCase()) ||
+            //     String(record.popularity)
+            //       .toLocaleLowerCase()
+            //       .includes(value.toLowerCase()) ||
+            //     String(record.knownForDepartment)
+            //       .toLocaleLowerCase()
+            //       .includes(value.toLowerCase())
+            //   );
+            // }}
           />
           <Column
             title="Departmeny"
             dataIndex="knownForDepartment"
             key="knownForDepartment"
           />
-          <Column title="Popularity" dataIndex="popularity" key="popularity" />
+          <Column title="Popularity" dataIndex="popularity" />
 
           <Column
             title="Action"
-            key="id"
             render={(_, record) => (
               <Space size="middle">
                 <EditOutlined onClick={() => onEditPerson(record)} />
@@ -186,13 +226,13 @@ const Persons = () => {
             variables: {
               id: editPersonId,
               data: {
-                name:editPerson?.name,
-                gender:editPerson?.gender,
-                knownForDepartment:editPerson.knownForDepartment,
+                name: editPerson?.name,
+                gender: editPerson?.gender,
+                knownForDepartment: editPerson.knownForDepartment,
                 popularity: Number(editPerson.popularity),
               },
             },
-          })
+          });
           setIsEditable(false);
         }}
       >
@@ -258,7 +298,7 @@ const Persons = () => {
           value={newperson.popularity}
           type="number"
           onChange={(e) => {
-            setNewPerson({ ...newperson, popularity: Number(e.target.value)});
+            setNewPerson({ ...newperson, popularity: Number(e.target.value) });
           }}
           placeholder="write propularity in Numbers"
         />

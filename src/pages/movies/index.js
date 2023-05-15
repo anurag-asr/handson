@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Button, Card, Col, Image, Input, Modal, Row, Spin } from "antd";
 import Meta from "antd/es/card/Meta";
@@ -6,40 +6,43 @@ import { Link, useLocation } from "react-router-dom";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DELETE_MOVIE_QUERY, FEATURED_MOVIES_QUERY } from "../../graphQl/movie";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-
+import { Select, Space } from "antd";
 
 const MovieListing = () => {
+  const [limit,setLimit] = useState(9)
+  const [sortby,setSortBy] = useState("DESC")
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [searchedText, setSearchedText] = useState();
   const location = useLocation();
+  const containerRef = useRef(null);
 
   //########### Queries ##########
   const [deleteMovie] = useMutation(DELETE_MOVIE_QUERY);
   const [getMoviesData] = useLazyQuery(FEATURED_MOVIES_QUERY, {
     fetchPolicy: "network-only",
     onCompleted(res) {
-      setDataSource([...dataSource, ...res?.movies?.data]);
+      setDataSource((prev)=>[...prev,...res?.listMovies?.data])
     },
     onError(err) {
       console.log("", err);
     },
   });
-  // ##############################
 
-  const fetchMovieData = async (p) => {
+  const fetchMovieData = async () => {
     try {
       getMoviesData({
         variables: {
           sort: {
             field: "createdAt",
-            order: "DESC",
+            order: sortby,
           },
           filter: {
-            limit: 10,
-            skip: p * 10,
+            limit: limit,
+            skip:limit*page,
+            searchTerm:searchedText
           },
         },
       });
@@ -48,17 +51,7 @@ const MovieListing = () => {
     }
   };
 
-  const fetchMoreData = async () => {
-    try {
-      setLoading(true);
-      setTimeout(() => {
-        setPage((prev) => prev + 1);
-        setLoading(false);
-      }, 1000);
-    } catch (error) {
-      console.log("error while scroll fetching the data", error);
-    }
-  };
+
 
   const deletemovieByid = async (id) => {
     Modal.confirm({
@@ -81,11 +74,43 @@ const MovieListing = () => {
       },
     });
   };
+ 
+  const handleSortBy = (value) => {
+    setSortBy(value)
+  };
+  
+  let id;
+  const handleChange = (e) => {
+    clearTimeout(id);
+    id = setTimeout(()=>{
+      setSearchedText(e.target.value)
+    },1000)
+    
+  };
+
 
   useEffect(() => {
-    fetchMovieData(page)
+    fetchMovieData(page);
     // eslint-disable-next-line
-  }, [page, location.pathname]);
+   }, [page, limit, searchedText, sortby, location.pathname]);
+
+  
+   const handleScroll = () => {
+    const container = containerRef.current;
+    if (container.scrollHeight - container.scrollTop === container.clientHeight) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    const container = containerRef.current;
+    container.addEventListener("scroll", handleScroll);
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  console.log(searchedText)
 
   return (
     <div>
@@ -96,33 +121,39 @@ const MovieListing = () => {
         </Link>
         <Input.Search
           placeholder="Enter Your Movie Name"
-          onSearch={(value) => {
-            setSearchedText(value);
-          }}
-          onChange={(e) => {
-            setSearchedText(e.target.value);
-          }}
+          onChange={handleChange}
         />
+         <Select
+      defaultValue="DESC"
+      style={{
+        width: 120,
+        marginLeft:"5px"
+      }}
+      onChange={handleSortBy}
+      options={[
+        {
+          value: 'ASC',
+          label: 'ASC',
+        },
+        {
+          value: 'DESC',
+          label: 'DESC',
+        }
+      ]}
+    />
       </div>
-      <InfiniteScroll
-        dataLength={dataSource.length}
-        next={fetchMoreData}
-        hasMore={true}
-        loader={loading ? <Spin size="small" /> : <h6>...</h6>}
-      >
-        <div className="home_page">
-          <Row gutter={[16, 16]} className="moviescrolldiv">
+     <div className="moviescrolldiv"ref={containerRef} >
+     <div className="home_page">
+          <Row gutter={[16, 16]} >
             {dataSource ? (
               dataSource.map((elem) => (
                 <Col span={8} key={elem.id}>
-                  <Link></Link>
                   <Card
                     hoverable
                     size="small"
                     title={`${elem.title}`}
                     extra={<a href={`detailsmovie/${elem.id}`}>Details</a>}
                     cover={
-                      
                       <Image
                         alt="example"
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGb56xEqrOH5PIAa5EQqJvrYa1OcEplrdQjA&usqp=CAU"
@@ -154,7 +185,11 @@ const MovieListing = () => {
             )}
           </Row>
         </div>
-      </InfiniteScroll>
+     </div>
+
+     
+        
+
     </div>
   );
 };

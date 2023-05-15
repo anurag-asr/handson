@@ -1,7 +1,6 @@
 import React from 'react'
 import { useLocation,Navigate } from 'react-router-dom'
-import { AUTH_TOKEN } from '../Constants'
-
+import { AUTH_TOKEN } from '../../common/constant';
 
 const RequireAuth = ({children}) => {
     const location = useLocation();

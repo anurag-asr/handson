@@ -22,9 +22,9 @@ const BreadCrumb = () => {
             const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
             const isLast = index === pathnames.length - 1;
             return isLast ? (
-              <Breadcrumb.Item>{capatilize(name)}</Breadcrumb.Item>
+              <Breadcrumb.Item key={Math.random()}>{capatilize(name)}</Breadcrumb.Item>
             ) : (
-              <Breadcrumb.Item>
+              <Breadcrumb.Item key={Math.random()}>
                 <Link to={`${routeTo}`}>{capatilize(name)}</Link>
               </Breadcrumb.Item>
             );
@@ -35,5 +35,6 @@ const BreadCrumb = () => {
   };
 
   return <>{breadCrumbView()}</>;
-}
-export default BreadCrumb
+};
+
+export default BreadCrumb;
