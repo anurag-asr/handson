@@ -4,16 +4,12 @@ import { Button, Card, Col, Image, Input, Modal, Row, Spin } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Link, useLocation } from "react-router-dom";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { DELETE_MOVIE_QUERY, FEATURED_MOVIES_QUERY } from "../../graphQl/movie";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { Select, Space } from "antd";
+import { DELETE_MOVIE_QUERY, FEATURED_MOVIES_QUERY } from "../../graphql/movie";
+import { Select } from "antd";
 
 const MovieListing = () => {
-  const [limit,setLimit] = useState(9)
-  const [sortby,setSortBy] = useState("DESC")
+  const [sortby, setSortBy] = useState("DESC");
   const [page, setPage] = useState(0);
-  // const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const [searchedText, setSearchedText] = useState();
   const location = useLocation();
@@ -21,16 +17,17 @@ const MovieListing = () => {
 
   //########### Queries ##########
   const [deleteMovie] = useMutation(DELETE_MOVIE_QUERY);
-  const [getMoviesData] = useLazyQuery(FEATURED_MOVIES_QUERY, {
+  const [getMoviesData, { fetchMore }] = useLazyQuery(FEATURED_MOVIES_QUERY, {
     fetchPolicy: "network-only",
     onCompleted(res) {
-      setDataSource((prev)=>[...prev,...res?.listMovies?.data])
+      setDataSource((prev) => [...prev, ...res?.listMovies?.data]);
     },
     onError(err) {
       console.log("", err);
     },
   });
 
+  let limit = 9;
   const fetchMovieData = async () => {
     try {
       getMoviesData({
@@ -41,19 +38,17 @@ const MovieListing = () => {
           },
           filter: {
             limit: limit,
-            skip:limit*page,
-            searchTerm:searchedText
+            skip: dataSource.length,
+            searchTerm: searchedText,
           },
         },
       });
     } catch (error) {
-      console.log("error while fecthing the movie data from api", error);
+      console.log("error while fetching the movie data from api", error);
     }
   };
 
-
-
-  const deletemovieByid = async (id) => {
+  const deleteMovieId = async (id) => {
     Modal.confirm({
       title: "Are You sure you want to delete",
       okText: "Yes",
@@ -74,30 +69,51 @@ const MovieListing = () => {
       },
     });
   };
- 
+
   const handleSortBy = (value) => {
-    setSortBy(value)
+    setSortBy(value);
   };
-  
+
   let id;
   const handleChange = (e) => {
     clearTimeout(id);
-    id = setTimeout(()=>{
-      setSearchedText(e.target.value)
-    },1000)
-    
+    id = setTimeout(() => {
+      setSearchedText(e.target.value);
+    }, 1000);
   };
-
 
   useEffect(() => {
     fetchMovieData(page);
     // eslint-disable-next-line
-   }, [page, limit, searchedText, sortby, location.pathname]);
+  }, [page, location.pathname]);
 
-  
-   const handleScroll = () => {
+  useEffect(() => {
+    const fetchDataOnSearch = async () => {
+      const { data } = await fetchMore({
+        variables: {
+          sort: {
+            field: "createdAt",
+            order: sortby,
+          },
+          filter: {
+            limit: limit,
+            skip: limit * page,
+            searchTerm: searchedText,
+          },
+        },
+      });
+      setDataSource([...data?.listMovies?.data]);
+    };
+    fetchDataOnSearch();
+    // eslint-disable-next-line
+  }, [searchedText, sortby]);
+
+  const handleScroll = () => {
     const container = containerRef.current;
-    if (container.scrollHeight - container.scrollTop === container.clientHeight) {
+    if (
+      container.scrollHeight - container.scrollTop ===
+      container.clientHeight
+    ) {
       setPage((prevPage) => prevPage + 1);
     }
   };
@@ -108,51 +124,49 @@ const MovieListing = () => {
     return () => {
       container.removeEventListener("scroll", handleScroll);
     };
+    // eslint-disable-next-line
   }, []);
-
-  console.log(searchedText)
 
   return (
     <div>
       <div className="movie_page_btn"></div>
       <div className="persona_page_btn">
-        <Link to="/addmovie">
+        <Link to="/movie/create">
           <Button>Add Movie</Button>
         </Link>
         <Input.Search
           placeholder="Enter Your Movie Name"
           onChange={handleChange}
         />
-         <Select
-      defaultValue="DESC"
-      style={{
-        width: 120,
-        marginLeft:"5px"
-      }}
-      onChange={handleSortBy}
-      options={[
-        {
-          value: 'ASC',
-          label: 'ASC',
-        },
-        {
-          value: 'DESC',
-          label: 'DESC',
-        }
-      ]}
-    />
+        <Select
+          defaultValue="DESC"
+          style={{
+            width: 120,
+            marginLeft: "5px",
+          }}
+          onChange={handleSortBy}
+          options={[
+            {
+              value: "ASC",
+              label: "ASC",
+            },
+            {
+              value: "DESC",
+              label: "DESC",
+            },
+          ]}
+        />
       </div>
-     <div className="moviescrolldiv"ref={containerRef} >
-     <div className="home_page">
+      <div className="movieScrollDiv" ref={containerRef}>
+        <div className="home_page">
           <Row gutter={[16, 16]} >
             {dataSource ? (
               dataSource.map((elem) => (
-                <Col span={8} key={elem.id}>
+                <Col xs={{span:24}} md={{span:12}} lg={{span:8}} key={elem.id}>
                   <Card
-                    hoverable
                     size="small"
                     title={`${elem.title}`}
-                    extra={<a href={`detailsmovie/${elem.id}`}>Details</a>}
+                    extra={<a href={`details/${elem.id}`}>Details</a>}
                     cover={
                       <Image
                         alt="example"
@@ -160,13 +174,13 @@ const MovieListing = () => {
                       />
                     }
                     actions={[
-                      <a href={`/movie_edit/${elem.id}`}>
+                      <a href={`/movie/edit/${elem.id}`}>
                         <EditOutlined key="edit" />
                       </a>,
                       <DeleteOutlined
                         key="setting"
                         onClick={() => {
-                          deletemovieByid(elem.id);
+                          deleteMovieId(elem.id);
                         }}
                       />,
                     ]}
@@ -185,11 +199,7 @@ const MovieListing = () => {
             )}
           </Row>
         </div>
-     </div>
-
-     
-        
-
+      </div>
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import './App.css';
-import AppFooter from './Components/appfooter';
-import AppHeader from './Components/appheader';
-import PageContent from './Components/pagecontent';
-import BreadCrumb from './pages/breadcrumbs';
+import AppFooter from './components/app_footer';
+import AppHeader from './components/app_header';
+import PageContent from './components/page_content';
+import BreadCrumb from './pages/bread_crumbs';
 
 function App() {
   return (

@@ -1,28 +1,27 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
-
-import { Button, Space, Table, Modal, Input, Typography, Select } from "antd";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { Button, Space, Table, Modal, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import {
+  ADD_PERSON_DATA,
   DELETE_PERSON_QUERY,
   EDITING_PERSON_QUERY,
   PERSON_LIST_QUERY,
-} from "../../graphQl/person";
-import { ADD_PERSON_DATA } from "../../graphQl/addperson";
+} from "../../graphql/person";
+
 const { Column } = Table;
 
 const Persons = () => {
-  const [sortby,setSortBy] = useState("DESC")
-  const [adddata, setAddData] = useState("");
+  const [sortby, setSortBy] = useState("DESC");
+  const [person, setPerson] = useState("");
   const [searchedText, setSearchedText] = useState("");
   const [editPersonId, setEditPersonId] = useState("");
-  const [editPerson, seteditPerson] = useState(null);
+  const [editPerson, setEditPerson] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
   const [sourceData, setSourceData] = useState();
   const [deleteId, setDeleteId] = useState("");
-  const [isAddpersonEditable, setAddPersonEditable] = useState(false);
-
-  const [newperson, setNewPerson] = useState({
+  const [isAdd, setIsAdd] = useState(false);
+  const [newPerson, setNewPerson] = useState({
     name: "",
     gender: "",
     popularity: "",
@@ -36,7 +35,7 @@ const Persons = () => {
     },
   });
 
-  const [deletefunc] = useMutation(DELETE_PERSON_QUERY, {
+  const [deletePerson] = useMutation(DELETE_PERSON_QUERY, {
     fetchPolicy: "network-only",
     onCompleted() {
       setSourceData((pre) => {
@@ -45,7 +44,7 @@ const Persons = () => {
     },
   });
 
-  const [editfunc] = useMutation(EDITING_PERSON_QUERY, {
+  const [editPersonData] = useMutation(EDITING_PERSON_QUERY, {
     fetchPolicy: "network-only",
     onCompleted(res) {
       setSourceData((pre) => {
@@ -63,7 +62,7 @@ const Persons = () => {
   const [addPersonData] = useMutation(ADD_PERSON_DATA, {
     fetchPolicy: "network-only",
     onCompleted(res) {
-      setAddData("successfull");
+      setPerson("success-full");
     },
   });
 
@@ -74,7 +73,7 @@ const Persons = () => {
       okType: "danger",
       onOk: () => {
         setDeleteId(record.id);
-        deletefunc({
+        deletePerson({
           variables: {
             id: record.id,
           },
@@ -86,11 +85,11 @@ const Persons = () => {
   const onEditPerson = async (record) => {
     setIsEditable(true);
     setEditPersonId(record.id);
-    seteditPerson({ ...record });
+    setEditPerson({ ...record });
   };
 
   const handleAddPerson = () => {
-    setAddPersonEditable(true);
+    setIsAdd(true);
   };
 
   const personData = () => {
@@ -101,33 +100,32 @@ const Persons = () => {
           order: sortby,
         },
         filter: {
-          searchTerm:searchedText
+          searchTerm: searchedText,
         },
       },
     });
   };
 
   const handleSortBy = (value) => {
-    setSortBy(value)
+    setSortBy(value);
   };
-  
+
   let id;
   const handleChange = (e) => {
-   clearTimeout(id);
-   id = setTimeout(()=>{
-     setSearchedText(e.target.value)
-   },1000)
-  }
+    clearTimeout(id);
+    id = setTimeout(() => {
+      setSearchedText(e.target.value);
+    }, 1000);
+  };
 
   const handelInfiniteScroll = () => {
-    console.log("setTarget e target value")
-  }
+    console.log("setTarget e target value");
+  };
 
   useEffect(() => {
-    personData()
-
+    personData();
     // eslint-disable-next-line
-  }, [adddata, sortby, searchedText]);
+  }, [person, sortby, searchedText]);
 
   useEffect(() => {
     window.addEventListener("scroll", handelInfiniteScroll);
@@ -138,61 +136,37 @@ const Persons = () => {
     <div className="persona_page">
       <div className="persona_page_btn">
         <Button onClick={handleAddPerson}>Add New Person</Button>
-        <Input.Search
-          placeholder="Enter Your Text"
-          onChange={handleChange}
+        <Input.Search placeholder="Enter Your Text" onChange={handleChange} />
+        <Select
+          defaultValue="DESC"
+          style={{
+            width: 120,
+            marginLeft: "5px",
+          }}
+          onChange={handleSortBy}
+          options={[
+            {
+              value: "ASC",
+              label: "ASC",
+            },
+            {
+              value: "DESC",
+              label: "DESC",
+            },
+          ]}
         />
-           <Select
-      defaultValue="DESC"
-      style={{
-        width: 120,
-        marginLeft:"5px"
-      }}
-      onChange={handleSortBy}
-      options={[
-        {
-          value: 'ASC',
-          label: 'ASC',
-        },
-        {
-          value: 'DESC',
-          label: 'DESC',
-        }
-      ]}
-    />
       </div>
 
       {sourceData && (
         <Table
           dataSource={sourceData}
           rowKey={(obj) => obj.id}
-          className="personscrooldiv"
+          className="personScrollDiv"
         >
           <Column title="Name" dataIndex="name" />
+          <Column title="Gender" dataIndex="gender" key="gender" />
           <Column
-            title="Gender"
-            dataIndex="gender"
-            key="gender"
-            // filteredValue={[searchedText]}
-            // onFilter={(value, record) => {
-            //   return (
-            //     String(record.name)
-            //       .toLocaleLowerCase()
-            //       .includes(value.toLowerCase()) ||
-            //     String(record.gender)
-            //       .toLocaleLowerCase()
-            //       .includes(value.toLowerCase()) ||
-            //     String(record.popularity)
-            //       .toLocaleLowerCase()
-            //       .includes(value.toLowerCase()) ||
-            //     String(record.knownForDepartment)
-            //       .toLocaleLowerCase()
-            //       .includes(value.toLowerCase())
-            //   );
-            // }}
-          />
-          <Column
-            title="Departmeny"
+            title="Department"
             dataIndex="knownForDepartment"
             key="knownForDepartment"
           />
@@ -222,7 +196,7 @@ const Persons = () => {
           setIsEditable(false);
         }}
         onOk={() => {
-          editfunc({
+          editPersonData({
             variables: {
               id: editPersonId,
               data: {
@@ -239,26 +213,29 @@ const Persons = () => {
         <Input
           value={editPerson?.name}
           onChange={(e) => {
-            seteditPerson({ ...editPerson, name: e.target.value });
+            setEditPerson({ ...editPerson, name: e.target.value });
           }}
         />
         <Input
           value={editPerson?.gender.toUpperCase()}
           onChange={(e) => {
-            seteditPerson({ ...editPerson, gender: e.target.value });
+            setEditPerson({
+              ...editPerson,
+              gender: e.target.value.toUpperCase(),
+            });
           }}
         />
         <Input
           value={editPerson?.popularity}
           type="number"
           onChange={(e) => {
-            seteditPerson({ ...editPerson, popularity: e.target.value });
+            setEditPerson({ ...editPerson, popularity: e.target.value });
           }}
         />
         <Input
           value={editPerson?.knownForDepartment}
           onChange={(e) => {
-            seteditPerson({
+            setEditPerson({
               ...editPerson,
               knownForDepartment: e.target.value,
             });
@@ -267,45 +244,45 @@ const Persons = () => {
       </Modal>
       <Modal
         title="Add person"
-        open={isAddpersonEditable}
+        open={isAdd}
         onCancel={() => {
-          setAddPersonEditable(false);
+          setIsAdd(false);
         }}
         onOk={() => {
           addPersonData({
             variables: {
-              data: newperson,
+              data: newPerson,
             },
           });
-          setAddPersonEditable(false);
+          setIsAdd(false);
         }}
       >
         <Input
-          value={newperson.name}
+          value={newPerson.name}
           onChange={(e) => {
-            setNewPerson({ ...newperson, name: e.target.value });
+            setNewPerson({ ...newPerson, name: e.target.value });
           }}
           placeholder="Enter Name of A person"
         />
         <Input
-          value={newperson.gender.toUpperCase()}
+          value={newPerson.gender.toUpperCase()}
           onChange={(e) => {
-            setNewPerson({ ...newperson, gender: e.target.value });
+            setNewPerson({ ...newPerson, gender: e.target.value });
           }}
           placeholder="gender Value"
         />
         <Input
-          value={newperson.popularity}
+          value={newPerson.popularity}
           type="number"
           onChange={(e) => {
-            setNewPerson({ ...newperson, popularity: Number(e.target.value) });
+            setNewPerson({ ...newPerson, popularity: Number(e.target.value) });
           }}
-          placeholder="write propularity in Numbers"
+          placeholder="write popularity in Numbers"
         />
         <Input
-          value={newperson.knownForDepartment}
+          value={newPerson.knownForDepartment}
           onChange={(e) => {
-            setNewPerson({ ...newperson, knownForDepartment: e.target.value });
+            setNewPerson({ ...newPerson, knownForDepartment: e.target.value });
           }}
           placeholder="Enter Your Department"
         />

@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, Input } from "antd";
 import { useMutation } from "@apollo/client";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LOGIN_MUTATION } from "../../graphQl/login";
+import { LOGIN_MUTATION } from "../../graphql/login";
 import { AUTH_TOKEN } from "../../common/constant";
 
 const Login = () => {
@@ -10,7 +10,7 @@ const Login = () => {
   const location = useLocation();
 
   const onFinish = async (values) => {
-    loginfunc({
+    loginDetails({
       variables: {
         data: { email: values.username, password: values.password },
       },
@@ -19,16 +19,17 @@ const Login = () => {
 
   const onFinishFailed = (errorInfo) => {
     console.log(errorInfo);
-    alert("Invalid Crendetial");
+    alert("Invalid Credential");
   };
 
   const redirectPath = location.state?.path || "/";
 
-  const [loginfunc] = useMutation(LOGIN_MUTATION, {
-    fetchPolicy:"network-only",
+  const [loginDetails] = useMutation(LOGIN_MUTATION, {
+    fetchPolicy: "network-only",
     onCompleted(res) {
       localStorage.setItem(
-        AUTH_TOKEN,res?.emailPasswordLogIn?.data?.token || []
+        AUTH_TOKEN,
+        res?.emailPasswordLogIn?.data?.token || []
       );
       navigate(redirectPath, { replace: true });
     },
@@ -93,9 +94,5 @@ const Login = () => {
     </div>
   );
 };
-
-// export const isAuthenticated =() =>{
-
-//  }
 
 export default Login;
