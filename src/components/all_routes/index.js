@@ -10,6 +10,7 @@ import Home from "../../pages/home_page";
 import RequireAuth from "../../pages/require_auth";
 
 const AllRoutes = () => {
+  
   return (
     <Routes>
       <Route path="/" element={<Home />} />

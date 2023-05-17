@@ -40,3 +40,30 @@ const BreadCrumb = () => {
 };
 
 export default BreadCrumb;
+// const routes = [
+//   { path: '/', title: 'Home' },
+//   { path: '/about', title: 'About' },
+//   { path: '/contact', title: 'Contact' },
+// ];
+
+// import React from 'react';
+// import { Breadcrumb } from 'antd';
+// import { Link } from 'react-router-dom';
+
+// const Breadcrumbs = ({ routes }) => {
+//   return (
+//     <Breadcrumb>
+//       {routes.map((route, index) => (
+//         <Breadcrumb.Item key={index}>
+//           {route.path ? (
+//             <Link to={route.path}>{route.title}</Link>
+//           ) : (
+//             route.title
+//           )}
+//         </Breadcrumb.Item>
+//       ))}
+//     </Breadcrumb>
+//   );
+// };
+
+// export default Breadcrumbs;
